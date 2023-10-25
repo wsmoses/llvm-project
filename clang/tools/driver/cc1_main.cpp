@@ -57,6 +57,11 @@
 using namespace clang;
 using namespace llvm::opt;
 
+//! List of pass builder callbacks to be applied, for adding additional
+//! functionality via static linking, without maintaining a separate fork of
+//! LLVM.
+SmallVector<std::function<void(llvm::PassBuilder &)>> PassBuilderCallbacks;
+
 //===----------------------------------------------------------------------===//
 // Main driver
 //===----------------------------------------------------------------------===//
@@ -227,6 +232,10 @@ int cc1_main(ArrayRef<const char *> Argv, const char *Argv0, void *MainAddr) {
   ensureSufficientStack();
 
   std::unique_ptr<CompilerInstance> Clang(new CompilerInstance());
+  for (auto PassCallback : PassBuilderCallbacks) {
+    Clang->getCodeGenOpts().PassBuilderCallbacks.push_back(PassCallback);
+  }
+
   IntrusiveRefCntPtr<DiagnosticIDs> DiagID(new DiagnosticIDs());
 
   // Register the support for object-file-wrapped Clang modules.

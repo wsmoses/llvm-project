@@ -62,6 +62,7 @@ list(APPEND CLANG_TEST_DEPS
   apinotes-test
   c-index-test
   clang
+  clang-hello-plugin-test
   clang-fuzzer-dictionary
   clang-resource-headers
   clang-format
