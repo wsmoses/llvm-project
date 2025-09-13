@@ -2876,7 +2876,8 @@ bool SimplifyCFGOpt::SpeculativelyExecuteBB(BranchInst *BI, BasicBlock *ThenBB,
   // Similarly strip attributes that maybe dependent on condition we are
   // hoisting above.
   for (auto &I : *ThenBB) {
-    if (!SpeculatedStoreValue || &I != SpeculatedStore)
+    if ((!SpeculatedStoreValue || &I != SpeculatedStore) &&
+        !isa<CallBase>(&I))
       I.setDebugLoc(DebugLoc());
     I.dropUndefImplyingAttrsAndUnknownMetadata();
   }
