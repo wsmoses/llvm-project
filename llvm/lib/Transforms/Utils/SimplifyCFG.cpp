@@ -3031,8 +3031,7 @@ bool SimplifyCFGOpt::SpeculativelyExecuteBB(BranchInst *BI, BasicBlock *ThenBB,
   // Similarly strip attributes that maybe dependent on condition we are
   // hoisting above.
   for (auto &I : make_early_inc_range(*ThenBB)) {
-    if ((!SpeculatedStoreValue || &I != SpeculatedStore) &&
-        !isa<CallBase>(&I)) {
+    if (!SpeculatedStoreValue || &I != SpeculatedStore) {
       // Don't update the DILocation of dbg.assign intrinsics.
       if (!isa<DbgAssignIntrinsic>(&I))
         I.dropLocation();
